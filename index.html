@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA Pro — Premium Wireless Headphones</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0b;
+      --text: #ffffff;
+      --text-dim: rgba(255,255,255,0.5);
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 68px; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== LOADER ===== */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 28px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.2s forwards;
+    }
+    .loader-track {
+      width: 140px;
+      height: 1.5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.4s forwards;
+    }
+    .loader-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #888, #fff);
+      border-radius: 2px;
+      animation: loadBar 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes loadBar { to { width: 100%; } }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 clamp(20px, 4vw, 60px);
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 11, 0.5);
+      backdrop-filter: blur(30px) saturate(1.6);
+      -webkit-backdrop-filter: blur(30px) saturate(1.6);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      animation: slideDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
+    }
+    @keyframes slideDown { to { transform: translateY(0); } }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #e8e8e8, #999);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #111;
+    }
+    .nav-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-center a {
+      text-decoration: none;
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-center a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #fff;
+      transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-center a:hover { color: #fff; }
+    .nav-center a:hover::after { width: 100%; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-btn {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .nav-ghost:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+    .nav-solid { background: #fff; color: #0a0a0b; border: none; }
+    .nav-solid:hover { background: #e8e8e8; transform: translateY(-1px); }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 680px;
+      overflow: hidden;
+    }
+
+    #bgCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 0;
+    }
+
+    .hero-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(10,10,11,0.75) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(10,10,11,0.6) 0%, rgba(10,10,11,0.1) 40%, rgba(10,10,11,0.1) 60%, rgba(10,10,11,0.7) 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 4vw, 60px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .hero-content > * { pointer-events: auto; }
+    .hero-left { max-width: 560px; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 2.4s forwards;
+    }
+    .tag-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #6ee7b7;
+      animation: dotPulse 2s ease infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(110,231,183,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(110,231,183,0); }
+    }
+
+    .hero-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(52px, 7vw, 100px);
+      font-weight: 700;
+      line-height: 0.96;
+      letter-spacing: -3px;
+      margin-bottom: 22px;
+    }
+    .hero-heading .row { display: block; overflow: hidden; }
+    .hero-heading .row span { display: inline-block; }
+    .hero-heading .row:nth-child(1) span {
+      opacity: 0; transform: translateY(100%);
+      animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.5s forwards;
+    }
+    .hero-heading .row:nth-child(2) span {
+      opacity: 0; transform: translateY(100%);
+      animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.65s forwards;
+    }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 0%, #999 60%, #ccc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-dim);
+      max-width: 400px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 2.8s forwards;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 2.95s forwards;
+    }
+
+    .hbtn {
+      padding: 15px 32px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hbtn-primary {
+      background: linear-gradient(135deg, #f0f0f0, #ccc);
+      color: #111;
+      box-shadow: 0 2px 24px rgba(255,255,255,0.08);
+    }
+    .hbtn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(255,255,255,0.15);
+    }
+    .hbtn-ghost {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+    .hbtn-ghost:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+    .hbtn svg { transition: transform 0.3s ease; }
+    .hbtn:hover svg { transform: translateX(3px); }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 3.1s forwards;
+    }
+    .price-now {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    .price-was { font-size: 15px; color: var(--text-dim); text-decoration: line-through; }
+    .price-save {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(110,231,183,0.1);
+      color: #6ee7b7;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== PART LABELS ===== */
+    .parts-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .part-label {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .part-label.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .part-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fff;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 12px rgba(255,255,255,0.3);
+    }
+
+    .part-dot::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: dotRing 2.5s ease-in-out infinite;
+    }
+
+    @keyframes dotRing {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .part-line {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
+      flex-shrink: 0;
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .part-label.visible .part-line {
+      width: var(--line-w, 50px);
+    }
+
+    .part-text {
+      display: flex;
+      flex-direction: column;
+      padding-left: 10px;
+      white-space: nowrap;
+    }
+
+    .part-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+
+    .part-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* Stagger delays for each label */
+    .part-label:nth-child(1) { transition-delay: 0s; }
+    .part-label:nth-child(2) { transition-delay: 0.08s; }
+    .part-label:nth-child(3) { transition-delay: 0.16s; }
+    .part-label:nth-child(4) { transition-delay: 0.24s; }
+    .part-label:nth-child(5) { transition-delay: 0.32s; }
+    .part-label:nth-child(6) { transition-delay: 0.40s; }
+    .part-label:nth-child(7) { transition-delay: 0.48s; }
+
+    /* Line direction modifier */
+    .part-label.flip {
+      flex-direction: row-reverse;
+    }
+
+    .part-label.flip .part-line {
+      background: linear-gradient(270deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
+    }
+
+    .part-label.flip .part-text {
+      padding-left: 0;
+      padding-right: 10px;
+      text-align: right;
+    }
+
+    /* ===== CURSOR HINT ===== */
+    .cursor-hint {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 3.4s forwards;
+      pointer-events: none;
+    }
+    .cursor-ring {
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      position: relative;
+    }
+    .cursor-ring::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: cursorPulse 2s ease-in-out infinite;
+    }
+    @keyframes cursorPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.6); opacity: 1; }
+    }
+    .cursor-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* Explode indicator */
+    .explode-indicator {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    .explode-indicator.visible { opacity: 1; }
+    .explode-bar {
+      width: 2px;
+      height: 60px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .explode-bar-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0%;
+      background: #fff;
+      border-radius: 2px;
+    }
+    .explode-text {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      position: relative;
+      z-index: 10;
+      padding: 0 clamp(20px, 4vw, 60px);
+      margin-top: -40px;
+      margin-bottom: 0;
+    }
+    .features-grid {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .feat {
+      padding: 32px 28px;
+      background: rgba(16, 16, 18, 0.92);
+      backdrop-filter: blur(16px);
+      text-align: center;
+      transition: background 0.35s;
+    }
+    .feat:hover { background: rgba(28, 28, 32, 0.95); }
+    .feat-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+    .feat-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .feat-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+    /* ===== EXPERIENCE SECTION ===== */
+    .experience {
+      position: relative;
+      z-index: 10;
+      padding: clamp(80px, 12vh, 160px) clamp(20px, 4vw, 60px);
+      overflow: hidden;
+    }
+
+    .exp-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 100px);
+      align-items: center;
+    }
+
+    .exp-visual {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 24px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 40%, #18181a 0%, #0e0e10 100%);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .exp-visual canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .exp-visual-veil {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(10,10,11,0.5) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .exp-visual-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+    .exp-visual-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #6ee7b7;
+      animation: dotPulse 2s ease infinite;
+    }
+
+    .exp-content {
+      padding: clamp(0px, 2vw, 40px) 0;
+    }
+
+    .exp-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      background: rgba(110,231,183,0.08);
+      border: 1px solid rgba(110,231,183,0.15);
+      font-size: 11px;
+      font-weight: 600;
+      color: #6ee7b7;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .exp-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .exp-desc {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+      max-width: 460px;
+    }
+
+    .exp-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .exp-stat {
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      transition: all 0.35s ease;
+    }
+    .exp-stat:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+
+    .exp-stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .exp-stat-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.3px;
+    }
+
+    .exp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      border-radius: 100px;
+      background: linear-gradient(135deg, #f0f0f0, #ccc);
+      color: #111;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .exp-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 40px rgba(255,255,255,0.15);
+    }
+    .exp-btn svg {
+      transition: transform 0.3s ease;
+    }
+    .exp-btn:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      position: relative;
+      z-index: 10;
+      padding: 60px clamp(20px, 4vw, 60px) 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .footer-brand { max-width: 280px; }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #e8e8e8, #999);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #111;
+    }
+
+    .footer-logo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .footer-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    .footer-col-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: #fff; }
+
+    .footer-bottom {
+      max-width: 1440px;
+      margin: 48px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-social {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      transition: all 0.3s ease;
+    }
+    .footer-social:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+    }
+    .footer-social svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--text-dim);
+      stroke-width: 1.5;
+    }
+
+    /* ===== GRAIN ===== */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 9996;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    @media (max-width: 768px) {
+      .nav-center { display: none; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-btns { flex-direction: column; }
+      .hbtn { width: 100%; justify-content: center; }
+      .cursor-hint { display: none; }
+      .explode-indicator { display: none; }
+      .parts-layer { display: none; }
+      .exp-inner { grid-template-columns: 1fr; }
+      .exp-visual { max-width: 500px; margin: 0 auto; }
+      .exp-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .exp-stat { padding: 14px; }
+      .exp-stat-val { font-size: 22px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      .modal-content { width: 92%; padding: 36px 28px; }
+    }
+
+    /* ===== SIGN-IN MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      width: 420px;
+      max-width: 95%;
+      background: #141416;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 44px 40px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 18px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.3s ease;
+    }
+    .modal-close:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .modal-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .modal-logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e8e8e8, #999);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #111;
+    }
+    .modal-logo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .form-input::placeholder {
+      color: rgba(255,255,255,0.2);
+    }
+    .form-input:focus {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 3px rgba(110,231,183,0.08);
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #f0f0f0, #ccc);
+      color: #111;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-top: 6px;
+    }
+    .form-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(255,255,255,0.12);
+    }
+    .form-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 22px 0;
+    }
+    .form-divider::before,
+    .form-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .form-divider span {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+
+    .form-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .form-link a {
+      color: #6ee7b7;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .form-link a:hover {
+      color: #86f5cb;
+    }
+
+    .form-message {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+    }
+    .form-message.success {
+      display: block;
+      background: rgba(110,231,183,0.08);
+      border: 1px solid rgba(110,231,183,0.2);
+      color: #6ee7b7;
+    }
+    .form-message.error {
+      display: block;
+      background: rgba(255,100,100,0.08);
+      border: 1px solid rgba(255,100,100,0.2);
+      color: #ff6b6b;
+    }
+
+    /* Logged-in toast */
+    .login-toast {
+      position: fixed;
+      top: 84px;
+      right: 24px;
+      z-index: 10001;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: #1a1a1e;
+      border: 1px solid rgba(110,231,183,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6ee7b7;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transform: translateX(120%);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .login-toast.show {
+      transform: translateX(0);
+    }
+    .login-toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6ee7b7;
+      animation: dotPulse 2s ease infinite;
+    }
+
+    /* Account dropdown */
+    .account-wrapper {
+      position: relative;
+    }
+    .account-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 220px;
+      background: #1a1a1e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .account-wrapper:hover .account-dropdown,
+    .account-dropdown.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .account-email {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+    .account-status {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #6ee7b7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .account-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #6ee7b7;
+    }
+    .account-logout {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,100,100,0.06);
+      color: #ff6b6b;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.3s;
+    }
+    .account-logout:hover {
+      background: rgba(255,100,100,0.12);
+    }
+
+    /* ===== PRE-ORDER MODAL ===== */
+    .preorder-select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    .preorder-select:focus {
+      border-color: rgba(255,255,255,0.2);
+      background-color: rgba(255,255,255,0.05);
+      box-shadow: 0 0 0 3px rgba(110,231,183,0.08);
+    }
+    .preorder-select option {
+      background: #1a1a1e;
+      color: #fff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .preorder-success {
+      text-align: center;
+      padding: 20px 0 0;
+    }
+    .preorder-success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(110,231,183,0.1);
+      border: 1px solid rgba(110,231,183,0.2);
+      display: inline-grid;
+      place-items: center;
+      margin-bottom: 14px;
+    }
+    .preorder-success-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: #6ee7b7;
+      stroke-width: 2;
+      fill: none;
+    }
+    .preorder-success h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .preorder-success p {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    /* ===== 3D PRODUCT VIEWER ===== */
+    .viewer-section {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--bg);
+      padding: clamp(60px, 8vh, 100px) clamp(20px, 4vw, 60px);
+    }
+
+    .viewer-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 0 clamp(20px, 4vw, 60px);
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+
+    .viewer-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+
+    .viewer-counter {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      color: var(--text-dim);
+      transition: all 0.3s ease;
+    }
+    .viewer-counter span {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* ---- PRODUCT CARD ---- */
+    .viewer-card {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      aspect-ratio: 16/10;
+      border-radius: 24px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 40%, #18181a 0%, #0e0e10 100%);
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .viewer-card:active { cursor: grabbing; }
+
+    /* ---- FRAME CONTAINER ---- */
+    .viewer-frames {
+      position: absolute;
+      inset: 0;
+    }
+
+    .viewer-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transform-origin: center center;
+      padding: 8%;
+    }
+
+    .viewer-frame.prev {
+      z-index: 1;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .viewer-frame.prev.swapping-out {
+      opacity: 0;
+      transform: scale(0.92) translateY(12px);
+    }
+
+    .viewer-frame.current {
+      z-index: 2;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .viewer-frame.current.swapping-in {
+      animation: frameSwapIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes frameSwapIn {
+      0% { opacity: 0; transform: scale(1.06) translateY(-16px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Specular overlay */
+    .viewer-specular {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background: radial-gradient(
+        ellipse 50% 50% at var(--sx, 50%) var(--sy, 50%),
+        rgba(255,255,255,0.5) 0%,
+        rgba(255,255,255,0.05) 50%,
+        transparent 70%
+      );
+      mix-blend-mode: overlay;
+    }
+    .viewer-card.active .viewer-specular { opacity: 1; }
+
+    /* Edge highlight */
+    .viewer-edge {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      border-radius: 24px;
+      border: 1px solid transparent;
+      transition: border-color 0.5s ease;
+    }
+    .viewer-card.active .viewer-edge {
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    /* ---- PRODUCT INFO (INSIDE CARD) ---- */
+    .viewer-info {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .viewer-info.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .viewer-product-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .viewer-product-tagline {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      max-width: 260px;
+      line-height: 1.5;
+    }
+
+    .viewer-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .viewer-price {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #6ee7b7;
+    }
+
+    .viewer-price-old {
+      font-size: 14px;
+      color: var(--text-dim);
+      text-decoration: line-through;
+    }
+
+    /* ---- BUY BUTTON (INSIDE CARD) ---- */
+    .viewer-buy {
+      position: absolute;
+      bottom: 24px;
+      right: 28px;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+    }
+    .viewer-buy.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .viewer-buy-btn {
+      padding: 12px 28px;
+      border-radius: 100px;
+      border: none;
+      background: linear-gradient(135deg, #f0f0f0, #ccc);
+      color: #111;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .viewer-buy-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+    }
+
+    /* ---- ROTATION GUIDE ---- */
+    .viewer-guide {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 12px;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .viewer-guide.visible { opacity: 1; }
+
+    .guide-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .guide-arrow svg {
+      width: 18px;
+      height: 18px;
+      stroke: rgba(255,255,255,0.25);
+      stroke-width: 1.5;
+      fill: none;
+      animation: guidePulse 2s ease-in-out infinite;
+    }
+    .guide-arrow:nth-child(2) svg { animation-delay: 1s; }
+    @keyframes guidePulse {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.7; }
+    }
+    .guide-label {
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ---- FRAME PROGRESS ---- */
+    .viewer-progress {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      z-index: 10;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .viewer-card.active .viewer-progress { opacity: 1; }
+    .viewer-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6ee7b7, #fff);
+      border-radius: 2px;
+      transition: width 0.05s linear;
+    }
+
+    /* ---- NAVIGATION ---- */
+    .viewer-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 28px;
+      z-index: 20;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+      pointer-events: none;
+    }
+    .viewer-nav.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .nav-arrow {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-arrow:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.2);
+      transform: scale(1.08);
+    }
+    .nav-arrow svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    .nav-arrow.disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .nav-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: all 0.35s ease;
+    }
+    .nav-dot.active {
+      background: #6ee7b7;
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* ---- INTERACTION HINT ---- */
+    .viewer-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 15;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+    .viewer-hint.hidden { opacity: 0; }
+
+    .hint-ring {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      position: relative;
+    }
+    .hint-ring::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+    .hint-ring::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+      animation: hintExpand 2s ease-in-out infinite;
+    }
+    @keyframes hintPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+    }
+    @keyframes hintExpand {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+      50% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+    }
+    .hint-text {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ---- PRODUCT COUNTER PULSE ---- */
+    .viewer-counter.pulse span {
+      animation: counterPulse 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes counterPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); color: #6ee7b7; }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 768px) {
+      .viewer-card { aspect-ratio: 4/3; border-radius: 18px; }
+      .viewer-info { left: 16px; bottom: 16px; }
+      .viewer-buy { right: 16px; bottom: 16px; }
+      .viewer-guide { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<div class="loader" id="loader">
+  <div class="loader-logo">AURA</div>
+  <div class="loader-track"><div class="loader-fill"></div></div>
+</div>
+
+<nav class="nav">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-mark">A</div>
+    <span class="nav-name">AURA</span>
+  </a>
+  <ul class="nav-center">
+    <li><a href="#viewerSection">Products</a></li>
+    <li><a href="#features">Technology</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#footer">Support</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="account-wrapper" id="accountWrapper" style="display:none;">
+      <button class="nav-btn nav-ghost" id="accountBtn">Account</button>
+      <div class="account-dropdown" id="accountDropdown">
+        <div class="account-email" id="accountEmail"></div>
+        <div class="account-status">You are logged in</div>
+        <button class="account-logout" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+    <button class="nav-btn nav-ghost" id="signInBtn">Sign In</button>
+    <button class="nav-btn nav-solid" id="preOrderNavBtn">Pre-Order</button>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <canvas id="bgCanvas"></canvas>
+  <div class="hero-veil"></div>
+
+  <!-- Part labels that appear on explode -->
+  <div class="parts-layer" id="partsLayer">
+
+    <!-- Headband — top center -->
+    <div class="part-label" id="label-headband"
+         style="top: 11%; left: 52%; --line-w: 70px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">Headband</span>
+        <span class="part-sub">Flexible steel core</span>
+      </div>
+    </div>
+
+    <!-- Left cushion — bottom left -->
+    <div class="part-label" id="label-cushion-l"
+         style="top: 68%; left: 22%; --line-w: 60px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">Ear Cushion</span>
+        <span class="part-sub">Memory foam + protein leather</span>
+      </div>
+    </div>
+
+    <!-- Right cushion — bottom right -->
+    <div class="part-label flip" id="label-cushion-r"
+         style="top: 68%; right: 22%; --line-w: 60px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">Ear Cushion</span>
+        <span class="part-sub">Memory foam + protein leather</span>
+      </div>
+    </div>
+
+    <!-- Left driver — mid left -->
+    <div class="part-label" id="label-driver-l"
+         style="top: 48%; left: 28%; --line-w: 55px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">50mm Driver</span>
+        <span class="part-sub">Titanium diaphragm</span>
+      </div>
+    </div>
+
+    <!-- Right driver — mid right -->
+    <div class="part-label flip" id="label-driver-r"
+         style="top: 48%; right: 28%; --line-w: 55px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">50mm Driver</span>
+        <span class="part-sub">Titanium diaphragm</span>
+      </div>
+    </div>
+
+    <!-- Electronics — center right -->
+    <div class="part-label flip" id="label-electronics"
+         style="top: 38%; right: 20%; --line-w: 65px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">ANC Processor</span>
+        <span class="part-sub">H2 chip, adaptive noise control</span>
+      </div>
+    </div>
+
+    <!-- Frame — bottom center -->
+    <div class="part-label" id="label-frame"
+         style="top: 82%; left: 46%; --line-w: 45px;">
+      <div class="part-dot"></div>
+      <div class="part-line"></div>
+      <div class="part-text">
+        <span class="part-name">Chassis</span>
+        <span class="part-sub">Aerospace-grade aluminum</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="tag">
+        <span class="tag-dot"></span>
+        New Release
+      </div>
+      <h1 class="hero-heading">
+        <span class="row"><span>Sound</span></span>
+        <span class="row"><span class="text-gradient">Reimagined.</span></span>
+      </h1>
+      <p class="hero-desc">
+        Engineered with 50mm titanium drivers, spatial audio, and 60-hour
+        battery life. Precision-crafted for those who hear every detail.
+      </p>
+      <div class="hero-btns">
+        <button type="button" class="hbtn hbtn-primary" id="preOrderHeroBtn">
+          Pre-Order Now
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <a href="#" class="hbtn hbtn-ghost">
+          Watch Film
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <polygon points="3,1 11,6 3,11" fill="currentColor"/>
+          </svg>
+        </a>
+      </div>
+      <div class="price-row">
+        <span class="price-now">$549</span>
+        <span class="price-was">$649</span>
+        <span class="price-save">SAVE $100</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cursor-hint">
+    <div class="cursor-ring"></div>
+    <span class="cursor-label">Move cursor to explore</span>
+  </div>
+
+  <div class="explode-indicator" id="explodeIndicator">
+    <div class="explode-bar"><div class="explode-bar-fill" id="explodeFill"></div></div>
+    <span class="explode-text">EXPLODE</span>
+  </div>
+</section>
+
+<!-- ===== 3D PRODUCT VIEWER ===== -->
+<section class="viewer-section" id="viewerSection">
+  <div class="viewer-header">
+    <span class="viewer-title">AURA — 3D Product Explorer</span>
+    <span class="viewer-counter" id="viewerCounter"><span id="viewerIdx">1</span> / 3</span>
+  </div>
+
+  <div class="viewer-card" id="viewerCard">
+    <div class="viewer-frames">
+      <img class="viewer-frame current" id="viewerFrame" src="product_frames/aura_pro/frame_0001.png" alt="AURA Pro 3D View" draggable="false">
+      <img class="viewer-frame prev" id="viewerFramePrev" src="" alt="" draggable="false">
+      <div class="viewer-specular" id="viewerSpecular"></div>
+      <div class="viewer-edge"></div>
+    </div>
+
+    <!-- Interaction hint -->
+    <div class="viewer-hint" id="viewerHint">
+      <div class="hint-ring"></div>
+      <span class="hint-text">Move cursor to rotate · Double-click to switch</span>
+    </div>
+
+    <!-- Rotation guide arrows -->
+    <div class="viewer-guide" id="viewerGuide">
+      <div class="guide-arrow">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="guide-label">Rotate</span>
+      </div>
+      <div class="guide-arrow">
+        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="guide-label">Rotate</span>
+      </div>
+    </div>
+
+    <!-- Frame progress -->
+    <div class="viewer-progress"><div class="viewer-progress-fill" id="viewerProgress"></div></div>
+
+    <!-- Product info (inside card) -->
+    <div class="viewer-info" id="viewerInfo">
+      <div class="viewer-product-name" id="viewerName">AURA Pro</div>
+      <div class="viewer-product-tagline" id="viewerTagline">50mm titanium drivers, spatial audio, 60-hour battery. Precision-crafted for every detail.</div>
+      <div class="viewer-price-row">
+        <span class="viewer-price" id="viewerPrice">$549</span>
+        <span class="viewer-price-old" id="viewerPriceOld">$649</span>
+      </div>
+    </div>
+
+    <!-- Buy button (inside card) -->
+    <div class="viewer-buy" id="viewerBuy">
+      <button class="viewer-buy-btn" onclick="this.textContent='Added to Cart!'; setTimeout(()=> this.textContent='Buy Now', 1800)">Buy Now</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="viewer-nav" id="viewerNav">
+    <button class="nav-arrow disabled" id="navPrev">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="nav-dots">
+      <div class="nav-dot active" data-idx="0"></div>
+      <div class="nav-dot" data-idx="1"></div>
+      <div class="nav-dot" data-idx="2"></div>
+    </div>
+    <button class="nav-arrow" id="navNext">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<div class="features" id="features">
+  <div class="features-grid">
+    <div class="feat">
+      <span class="feat-icon">🎧</span>
+      <div class="feat-title">50mm Titanium</div>
+      <div class="feat-desc">Studio-grade drivers, 5Hz–40kHz range</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🔋</span>
+      <div class="feat-title">60-Hour Battery</div>
+      <div class="feat-desc">All-week listening per charge</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">📡</span>
+      <div class="feat-title">Spatial Audio</div>
+      <div class="feat-desc">Head-tracked 360° immersion</div>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🔇</span>
+      <div class="feat-title">Adaptive ANC</div>
+      <div class="feat-desc">AI noise cancellation, real-time</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXPERIENCE SECTION ===== -->
+<section class="experience" id="experience">
+  <div class="exp-inner">
+    <div class="exp-visual">
+      <canvas id="expCanvas"></canvas>
+      <div class="exp-visual-veil"></div>
+      <div class="exp-visual-badge">
+        <span class="exp-visual-badge-dot"></span>
+        Live Sound Wave
+      </div>
+    </div>
+    <div class="exp-content">
+      <div class="exp-tag">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Sound Lab
+      </div>
+      <h2 class="exp-heading">
+        <span class="text-gradient">Feel Every</span><br>Frequency
+      </h2>
+      <p class="exp-desc">
+        Our proprietary titanium-coated drivers deliver crystal-clear highs
+        and thunderous bass. Tuned by Grammy-winning audio engineers for
+        the most demanding listeners.
+      </p>
+      <div class="exp-stats">
+        <div class="exp-stat">
+          <div class="exp-stat-val">50mm</div>
+          <div class="exp-stat-label">Driver Size</div>
+        </div>
+        <div class="exp-stat">
+          <div class="exp-stat-val">5Hz</div>
+          <div class="exp-stat-label">Low End</div>
+        </div>
+        <div class="exp-stat">
+          <div class="exp-stat-val">40kHz</div>
+          <div class="exp-stat-label">High End</div>
+        </div>
+      </div>
+      <a href="#" class="exp-btn">
+        Explore Technology
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-mark">A</div>
+        <span class="footer-logo-name">AURA</span>
+      </div>
+      <p class="footer-desc">
+        Engineered for those who hear every detail. Premium audio
+        technology crafted with precision and purpose.
+      </p>
+    </div>
+    <div>
+      <div class="footer-col-title">Products</div>
+      <ul class="footer-links">
+        <li><a href="#viewerSection">AURA Pro</a></li>
+        <li><a href="#viewerSection">AURA Air</a></li>
+        <li><a href="#viewerSection">AURA Max</a></li>
+        <li><a href="#viewerSection">Accessories</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">&copy; 2026 AURA Audio. All rights reserved.</span>
+    <div class="footer-socials">
+      <a href="#" class="footer-social" aria-label="Twitter">
+        <svg viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+      </a>
+      <a href="#" class="footer-social" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+      </a>
+      <a href="#" class="footer-social" aria-label="YouTube">
+        <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z"/><polygon points="9.75,15.02 15.5,11.75 9.75,8.48" fill="#0a0a0b"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SIGN-IN MODAL ===== -->
+<div class="modal-overlay" id="signInModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-logo">
+      <div class="modal-logo-mark">A</div>
+      <span class="modal-logo-name">AURA</span>
+    </div>
+    <p class="modal-subtitle">Sign in to access your account and orders.</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="form-btn" id="loginSubmit">Sign In</button>
+    </form>
+    <div class="form-message" id="formMessage"></div>
+    <div class="form-divider"><span>or</span></div>
+    <p class="form-link">Don't have an account? <a href="#" id="createAccountLink">Create one</a></p>
+  </div>
+</div>
+
+<!-- Login toast -->
+<div class="login-toast" id="loginToast">
+  <span class="login-toast-dot"></span>
+  You are logged in!
+</div>
+
+<!-- ===== PRE-ORDER MODAL ===== -->
+<div class="modal-overlay" id="preOrderModal">
+  <div class="modal-content">
+    <button class="modal-close" id="preOrderClose">&times;</button>
+    <div class="modal-logo">
+      <div class="modal-logo-mark">A</div>
+      <span class="modal-logo-name">AURA</span>
+    </div>
+    <p class="modal-subtitle">Reserve yours now. We'll notify you when it ships.</p>
+    <form id="preOrderForm">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" id="preOrderName" placeholder="Your full name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="tel" class="form-input" id="preOrderPhone" placeholder="+1 (555) 000-0000" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <input type="text" class="form-input" id="preOrderAddress" placeholder="Street address, city, state" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Item</label>
+          <select class="preorder-select" id="preOrderItem" required>
+            <option value="" disabled selected>Select product</option>
+            <option value="AURA Pro — $549">AURA Pro — $549</option>
+            <option value="AURA Air — $399">AURA Air — $399</option>
+            <option value="AURA Max — $699">AURA Max — $699</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pieces</label>
+          <select class="preorder-select" id="preOrderPieces" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="form-btn" id="preOrderSubmit">Place Pre-Order</button>
+    </form>
+    <div class="form-message" id="preOrderMessage"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== LOADER =====
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 2400);
+  });
+
+  // ===== CANVAS =====
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  const TOTAL = 192;
+  const frames = [];
+  let loaded = 0;
+  let currentFrame = 0;
+  let bgDir = 1;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 1; i <= TOTAL; i++) {
+    const img = new Image();
+    const n = String(i).padStart(4, '0');
+    img.src = `frames/frame_${n}.png`;
+    img.onload = () => {
+      loaded++;
+      if (loaded === TOTAL) startIdleLoop();
+    };
+    frames.push(img);
+  }
+
+  function drawFrame(idx) {
+    const img = frames[idx];
+    if (!img || !img.complete) return;
+    const cr = canvas.width / canvas.height;
+    const ir = img.width / img.height;
+    let w, h, x, y;
+    if (cr > ir) {
+      w = canvas.width;
+      h = w / ir;
+      x = 0;
+      y = (canvas.height - h) / 2;
+    } else {
+      h = canvas.height;
+      w = h * ir;
+      x = (canvas.width - w) / 2;
+      y = 0;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, x, y, w, h);
+  }
+
+  function startIdleLoop() {
+    drawFrame(0);
+    setInterval(() => {
+      if (!userInteracting) {
+        currentFrame += bgDir;
+        if (currentFrame >= 65) bgDir = -1;
+        if (currentFrame <= 0) bgDir = 1;
+        drawFrame(currentFrame);
+      }
+    }, 80);
+  }
+
+  // ===== CURSOR EXPLODE =====
+  const hero = document.getElementById('hero');
+  const explodeIndicator = document.getElementById('explodeIndicator');
+  const explodeFill = document.getElementById('explodeFill');
+  const partLabels = document.querySelectorAll('.part-label');
+  let userInteracting = false;
+  let explodeProgress = 0;
+  let targetExplode = 0;
+
+  hero.addEventListener('mousemove', e => {
+    const rect = hero.getBoundingClientRect();
+    const ny = (e.clientY - rect.top) / rect.height;
+    targetExplode = Math.max(0, Math.min(1, ny));
+    userInteracting = true;
+    explodeIndicator.classList.add('visible');
+  });
+
+  hero.addEventListener('mouseleave', () => {
+    targetExplode = 0;
+    userInteracting = false;
+    explodeIndicator.classList.remove('visible');
+  });
+
+  // Thresholds at which each label appears (0–1 of explode progress)
+  const labelThresholds = {
+    'label-headband':    0.12,
+    'label-driver-l':    0.22,
+    'label-driver-r':    0.22,
+    'label-electronics': 0.32,
+    'label-cushion-l':   0.42,
+    'label-cushion-r':   0.42,
+    'label-frame':       0.55
+  };
+
+  function animate() {
+    explodeProgress += (targetExplode - explodeProgress) * 0.08;
+
+    if (Math.abs(explodeProgress - targetExplode) < 0.001) {
+      explodeProgress = targetExplode;
+    }
+
+    const frameIdx = Math.round(1 + explodeProgress * (TOTAL - 1));
+    drawFrame(Math.min(frameIdx, TOTAL - 1));
+
+    explodeFill.style.height = (explodeProgress * 100) + '%';
+
+    // Show/hide part labels based on threshold
+    partLabels.forEach(label => {
+      const threshold = labelThresholds[label.id];
+      if (explodeProgress >= threshold) {
+        label.classList.add('visible');
+      } else {
+        label.classList.remove('visible');
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ===== PARTICLES =====
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    const size = Math.random() * 2.5 + 0.8;
+    const opacity = Math.random() * 0.2 + 0.04;
+    const dur = Math.random() * 18 + 12;
+    const delay = Math.random() * 18;
+    const xDrift = (Math.random() - 0.5) * 80;
+    const yDrift = -(Math.random() * 60 + 30);
+    Object.assign(p.style, {
+      position: 'fixed',
+      borderRadius: '50%',
+      background: `rgba(255,255,255,${opacity})`,
+      width: size + 'px',
+      height: size + 'px',
+      left: Math.random() * 100 + '%',
+      top: Math.random() * 100 + '%',
+      pointerEvents: 'none',
+      zIndex: '5',
+      animation: `pfloat ${dur}s linear ${delay}s infinite`
+    });
+    p.style.setProperty('--dx', xDrift + 'px');
+    p.style.setProperty('--dy', yDrift + 'px');
+    document.body.appendChild(p);
+  }
+
+  const pstyle = document.createElement('style');
+  pstyle.textContent = `
+    @keyframes pfloat {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(pstyle);
+
+  // ===== SCROLL REVEAL =====
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.feat').forEach((c, i) => {
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(24px)';
+    c.style.transition = `all 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${i * 0.08}s`;
+    obs.observe(c);
+  });
+
+  // ===== EXPERIENCE SECTION REVEAL =====
+  const expObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  const expSection = document.getElementById('experience');
+  if (expSection) {
+    const expElements = [
+      expSection.querySelector('.exp-visual'),
+      expSection.querySelector('.exp-tag'),
+      expSection.querySelector('.exp-heading'),
+      expSection.querySelector('.exp-desc'),
+      ...expSection.querySelectorAll('.exp-stat'),
+      expSection.querySelector('.exp-btn')
+    ];
+    expElements.forEach((el, i) => {
+      if (!el) return;
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = `all 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${i * 0.1}s`;
+    });
+    expObs.observe(expSection);
+  }
+
+  // Reveal elements when section enters view
+  const expRevealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const els = e.target.querySelectorAll('[style*="opacity: 0"], .exp-visual, .exp-tag, .exp-heading, .exp-desc, .exp-stat, .exp-btn');
+        els.forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+  if (expSection) expRevealObs.observe(expSection);
+
+  // ===== SOUND WAVE CANVAS =====
+  const expCanvas = document.getElementById('expCanvas');
+  if (expCanvas) {
+    const expCtx = expCanvas.getContext('2d');
+    let expAnimId;
+    let expTime = 0;
+
+    function resizeExpCanvas() {
+      const rect = expCanvas.parentElement.getBoundingClientRect();
+      expCanvas.width = rect.width;
+      expCanvas.height = rect.height;
+    }
+    resizeExpCanvas();
+    window.addEventListener('resize', resizeExpCanvas);
+
+    function drawSoundWave() {
+      expCtx.clearRect(0, 0, expCanvas.width, expCanvas.height);
+      const w = expCanvas.width;
+      const h = expCanvas.height;
+      const midY = h / 2;
+      const bars = 64;
+      const barW = w / bars;
+
+      for (let i = 0; i < bars; i++) {
+        const x = i * barW;
+        const freq1 = Math.sin((i * 0.15) + expTime * 2) * 0.5 + 0.5;
+        const freq2 = Math.sin((i * 0.08) + expTime * 1.3) * 0.5 + 0.5;
+        const freq3 = Math.sin((i * 0.25) + expTime * 3) * 0.5 + 0.5;
+        const amp = (freq1 * 0.4 + freq2 * 0.35 + freq3 * 0.25);
+        const barH = amp * h * 0.6;
+
+        const gradient = expCtx.createLinearGradient(x, midY - barH / 2, x, midY + barH / 2);
+        gradient.addColorStop(0, `rgba(110, 231, 183, ${0.15 + amp * 0.35})`);
+        gradient.addColorStop(0.5, `rgba(255, 255, 255, ${0.2 + amp * 0.4})`);
+        gradient.addColorStop(1, `rgba(110, 231, 183, ${0.15 + amp * 0.35})`);
+
+        expCtx.fillStyle = gradient;
+        expCtx.beginPath();
+        const radius = Math.min(barW * 0.3, barH / 2, 4);
+        const bx = x + barW * 0.2;
+        const bw = barW * 0.6;
+        const by = midY - barH / 2;
+        const bh = barH;
+
+        expCtx.moveTo(bx + radius, by);
+        expCtx.lineTo(bx + bw - radius, by);
+        expCtx.quadraticCurveTo(bx + bw, by, bx + bw, by + radius);
+        expCtx.lineTo(bx + bw, by + bh - radius);
+        expCtx.quadraticCurveTo(bx + bw, by + bh, bx + bw - radius, by + bh);
+        expCtx.lineTo(bx + radius, by + bh);
+        expCtx.quadraticCurveTo(bx, by + bh, bx, by + bh - radius);
+        expCtx.lineTo(bx, by + radius);
+        expCtx.quadraticCurveTo(bx, by, bx + radius, by);
+        expCtx.fill();
+      }
+
+      // Center glow
+      const glowGrad = expCtx.createRadialGradient(w / 2, midY, 0, w / 2, midY, w * 0.35);
+      glowGrad.addColorStop(0, 'rgba(110, 231, 183, 0.06)');
+      glowGrad.addColorStop(1, 'transparent');
+      expCtx.fillStyle = glowGrad;
+      expCtx.fillRect(0, 0, w, h);
+
+      expTime += 0.016;
+      expAnimId = requestAnimationFrame(drawSoundWave);
+    }
+
+    // Only animate when visible
+    const canvasObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          drawSoundWave();
+        } else {
+          cancelAnimationFrame(expAnimId);
+        }
+      });
+    }, { threshold: 0.1 });
+    canvasObs.observe(expCanvas);
+  }
+
+  // ===== 3D PRODUCT VIEWER — FRAME-BASED CURSOR ROTATION =====
+  const TOTAL_FRAMES = 240;
+
+  const products = [
+    {
+      folder: 'product_frames/aura_pro',
+      name: 'AURA Pro',
+      tagline: '50mm titanium drivers, spatial audio, 60-hour battery. Precision-crafted for every detail.',
+      price: '$549',
+      oldPrice: '$649'
+    },
+    {
+      folder: 'product_frames/aura_air',
+      name: 'AURA Air',
+      tagline: 'Ultra-lightweight design with adaptive ANC. Immersive sound, zero distraction.',
+      price: '$399',
+      oldPrice: '$499'
+    },
+    {
+      folder: 'product_frames/aura_max',
+      name: 'AURA Max',
+      tagline: 'Flagship titanium build. 80-hour battery, lossless spatial audio, pro-grade mic array.',
+      price: '$699',
+      oldPrice: '$849'
+    }
+  ];
+
+  let currentProduct = 0;
+  let frameCache = [[], [], []];
+  let framesLoaded = [0, 0, 0];
+
+  const frame = document.getElementById('viewerFrame');
+  const framePrev = document.getElementById('viewerFramePrev');
+  const viewerCard = document.getElementById('viewerCard');
+  const specular = document.getElementById('viewerSpecular');
+  const progress = document.getElementById('viewerProgress');
+  const hint = document.getElementById('viewerHint');
+  const guide = document.getElementById('viewerGuide');
+  const info = document.getElementById('viewerInfo');
+  const buySection = document.getElementById('viewerBuy');
+  const nav = document.getElementById('viewerNav');
+  const navPrev = document.getElementById('navPrev');
+  const navNext = document.getElementById('navNext');
+  const dots = document.querySelectorAll('.nav-dot');
+  const nameEl = document.getElementById('viewerName');
+  const taglineEl = document.getElementById('viewerTagline');
+  const priceEl = document.getElementById('viewerPrice');
+  const priceOldEl = document.getElementById('viewerPriceOld');
+  const idxEl = document.getElementById('viewerIdx');
+  const counterEl = document.getElementById('viewerCounter');
+
+  // Preload all frames
+  function preloadFrames(productIdx) {
+    const folder = products[productIdx].folder;
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      if (frameCache[productIdx][i]) continue;
+      const img = new Image();
+      const n = String(i).padStart(4, '0');
+      img.src = `${folder}/frame_${n}.png`;
+      img.onload = () => { framesLoaded[productIdx]++; };
+      frameCache[productIdx][i] = img;
+    }
+  }
+  preloadFrames(0);
+  preloadFrames(1);
+  preloadFrames(2);
+
+  // State
+  let mouseX = 0.5;
+  let mouseY = 0.5;
+  let smoothX = 0.5;
+  let smoothY = 0.5;
+  let velX = 0;
+  let prevX = 0.5;
+  let vCurrentFrame = 1;
+  let isActive = false;
+  let hasInteracted = false;
+  let currentScale = 1;
+  let targetScale = 1;
+  let panX = 0;
+  let panY = 0;
+  let isSwitching = false;
+
+  const LERP = 0.06;
+  const SCALE_LERP = 0.06;
+  const PAN_LERP = 0.05;
+
+  function showFrame(idx) {
+    const clamped = Math.max(1, Math.min(TOTAL_FRAMES, Math.round(idx)));
+    const img = frameCache[currentProduct][clamped];
+    if (img && img.complete) {
+      frame.src = img.src;
+    }
+    vCurrentFrame = clamped;
+    progress.style.width = ((clamped / TOTAL_FRAMES) * 100) + '%';
+  }
+
+  function updateProductInfo(idx) {
+    nameEl.textContent = products[idx].name;
+    taglineEl.textContent = products[idx].tagline;
+    priceEl.textContent = products[idx].price;
+    priceOldEl.textContent = products[idx].oldPrice;
+    idxEl.textContent = idx + 1;
+
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    navPrev.classList.toggle('disabled', idx === 0);
+    navNext.classList.toggle('disabled', idx === products.length - 1);
+
+    counterEl.classList.remove('pulse');
+    void counterEl.offsetWidth;
+    counterEl.classList.add('pulse');
+  }
+
+  function switchProduct(idx) {
+    if (idx === currentProduct || isSwitching) return;
+    if (idx < 0) idx = products.length - 1;
+    if (idx >= products.length) idx = 0;
+    isSwitching = true;
+
+    // Set prev frame to current product's current frame
+    framePrev.src = frame.src;
+    framePrev.classList.remove('swapping-out');
+    void framePrev.offsetWidth;
+    framePrev.classList.add('swapping-out');
+
+    // Fade info
+    info.classList.remove('visible');
+    buySection.classList.remove('visible');
+
+    setTimeout(() => {
+      currentProduct = idx;
+      updateProductInfo(idx);
+      showFrame(Math.round(smoothX * (TOTAL_FRAMES - 1)) + 1);
+
+      frame.classList.remove('swapping-in');
+      void frame.offsetWidth;
+      frame.classList.add('swapping-in');
+
+      setTimeout(() => {
+        framePrev.classList.remove('swapping-out');
+        frame.classList.remove('swapping-in');
+        info.classList.add('visible');
+        buySection.classList.add('visible');
+        isSwitching = false;
+      }, 500);
+    }, 300);
+  }
+
+  // Mouse events on the card
+  viewerCard.addEventListener('mouseenter', () => {
+    isActive = true;
+    targetScale = 1.03;
+    viewerCard.classList.add('active');
+    if (!hasInteracted) {
+      hasInteracted = true;
+      hint.classList.add('hidden');
+      guide.classList.add('visible');
+      setTimeout(() => guide.classList.remove('visible'), 3000);
+    }
+  });
+
+  viewerCard.addEventListener('mouseleave', () => {
+    isActive = false;
+    targetScale = 1;
+    viewerCard.classList.remove('active');
+  });
+
+  viewerCard.addEventListener('mousemove', e => {
+    const rect = viewerCard.getBoundingClientRect();
+    mouseX = (e.clientX - rect.left) / rect.width;
+    mouseY = (e.clientY - rect.top) / rect.height;
+
+    specular.style.setProperty('--sx', (mouseX * 100) + '%');
+    specular.style.setProperty('--sy', (mouseY * 100) + '%');
+  });
+
+  // Double-click to switch product
+  viewerCard.addEventListener('dblclick', e => {
+    e.preventDefault();
+    switchProduct(currentProduct + 1);
+  });
+
+  // Touch events
+  let lastTapTime = 0;
+
+  viewerCard.addEventListener('touchstart', e => {
+    const now = Date.now();
+    if (now - lastTapTime < 300) {
+      switchProduct(currentProduct + 1);
+      lastTapTime = 0;
+      return;
+    }
+    lastTapTime = now;
+
+    isActive = true;
+    targetScale = 1.03;
+    viewerCard.classList.add('active');
+    const rect = viewerCard.getBoundingClientRect();
+    mouseX = (e.touches[0].clientX - rect.left) / rect.width;
+    mouseY = (e.touches[0].clientY - rect.top) / rect.height;
+    if (!hasInteracted) {
+      hasInteracted = true;
+      hint.classList.add('hidden');
+    }
+  }, { passive: true });
+
+  viewerCard.addEventListener('touchmove', e => {
+    const rect = viewerCard.getBoundingClientRect();
+    mouseX = (e.touches[0].clientX - rect.left) / rect.width;
+    mouseY = (e.touches[0].clientY - rect.top) / rect.height;
+    specular.style.setProperty('--sx', (mouseX * 100) + '%');
+    specular.style.setProperty('--sy', (mouseY * 100) + '%');
+  }, { passive: true });
+
+  viewerCard.addEventListener('touchend', () => {
+    isActive = false;
+    targetScale = 1;
+    viewerCard.classList.remove('active');
+  });
+
+  // Navigation
+  navPrev.addEventListener('click', (e) => { e.stopPropagation(); switchProduct(currentProduct - 1); });
+  navNext.addEventListener('click', (e) => { e.stopPropagation(); switchProduct(currentProduct + 1); });
+  dots.forEach(d => {
+    d.addEventListener('click', (e) => { e.stopPropagation(); switchProduct(parseInt(d.dataset.idx)); });
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') switchProduct(currentProduct + 1);
+    else if (e.key === 'ArrowLeft') switchProduct(currentProduct - 1);
+  });
+
+  // Main animation loop
+  function tick() {
+    const targetX = isActive ? mouseX : 0.5;
+    const targetY = isActive ? mouseY : 0.5;
+
+    smoothX += (targetX - smoothX) * LERP;
+    smoothY += (targetY - smoothY) * LERP;
+
+    velX = smoothX - prevX;
+    prevX = smoothX;
+
+    // Frame index from cursor X
+    const frameIdx = smoothX * (TOTAL_FRAMES - 1) + 1;
+    showFrame(frameIdx);
+
+    // Smooth pan
+    const targetPanX = (smoothX - 0.5) * -30;
+    const targetPanY = (smoothY - 0.5) * -20;
+    panX += (targetPanX - panX) * PAN_LERP;
+    panY += (targetPanY - panY) * PAN_LERP;
+
+    currentScale += (targetScale - currentScale) * SCALE_LERP;
+
+    frame.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+
+    requestAnimationFrame(tick);
+  }
+
+  // Show UI when scrolled into view
+  const viewerObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        nav.classList.add('visible');
+        info.classList.add('visible');
+        buySection.classList.add('visible');
+      } else {
+        nav.classList.remove('visible');
+        info.classList.remove('visible');
+        buySection.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.3 });
+  viewerObs.observe(viewerCard);
+
+  showFrame(1);
+  tick();
+
+  // ===== SIGN-IN MODAL =====
+  const signInModal = document.getElementById('signInModal');
+  const signInBtn = document.getElementById('signInBtn');
+  const modalClose = document.getElementById('modalClose');
+  const loginForm = document.getElementById('loginForm');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginSubmit = document.getElementById('loginSubmit');
+  const formMessage = document.getElementById('formMessage');
+  const accountWrapper = document.getElementById('accountWrapper');
+  const accountEmail = document.getElementById('accountEmail');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const loginToast = document.getElementById('loginToast');
+
+  const WEBHOOK_URL = 'https://paddling-that-collie.ngrok-free.dev/webhook-test/User-login';
+
+  function openModal() {
+    signInModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    signInModal.classList.remove('active');
+    document.body.style.overflow = '';
+    formMessage.className = 'form-message';
+    formMessage.textContent = '';
+    loginForm.reset();
+  }
+
+  signInBtn.addEventListener('click', openModal);
+  modalClose.addEventListener('click', closeModal);
+  signInModal.addEventListener('click', e => {
+    if (e.target === signInModal) closeModal();
+  });
+
+  function showLoggedInState(email) {
+    accountWrapper.style.display = '';
+    signInBtn.style.display = 'none';
+    accountEmail.textContent = email;
+    loginToast.classList.add('show');
+    setTimeout(() => loginToast.classList.remove('show'), 3500);
+  }
+
+  function showLoggedOutState() {
+    accountWrapper.style.display = 'none';
+    signInBtn.style.display = '';
+  }
+
+  function setFormState(loading) {
+    loginSubmit.disabled = loading;
+    loginSubmit.textContent = loading ? 'Signing In...' : 'Sign In';
+  }
+
+  function showMessage(type, text) {
+    formMessage.className = 'form-message ' + type;
+    formMessage.textContent = text;
+  }
+
+  // Check saved login on load
+  const savedUser = localStorage.getItem('aura_user');
+  if (savedUser) {
+    try {
+      const user = JSON.parse(savedUser);
+      showLoggedInState(user.email);
+    } catch(e) {
+      localStorage.removeItem('aura_user');
+    }
+  }
+
+  // Login form submit
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if (!email || !password) {
+      showMessage('error', 'Please fill in all fields.');
+      return;
+    }
+
+    setFormState(true);
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && (data.success === true || data.status === 'success' || res.status === 200)) {
+        showMessage('success', 'Login successful!');
+        localStorage.setItem('aura_user', JSON.stringify({ email }));
+        setTimeout(() => {
+          closeModal();
+          showLoggedInState(email);
+        }, 800);
+      } else {
+        showMessage('error', data.message || 'Invalid credentials. Please try again.');
+      }
+    } catch (err) {
+      showMessage('error', 'Cannot reach server. Please try again later.');
+    } finally {
+      setFormState(false);
+    }
+  });
+
+  // Logout
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('aura_user');
+    showLoggedOutState();
+  });
+
+  // Create account link
+  document.getElementById('createAccountLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    showMessage('success', 'Account creation is coming soon!');
+  });
+
+  // ===== PRE-ORDER MODAL =====
+  const preOrderModal = document.getElementById('preOrderModal');
+  const preOrderClose = document.getElementById('preOrderClose');
+  const preOrderNavBtn = document.getElementById('preOrderNavBtn');
+  const preOrderHeroBtn = document.getElementById('preOrderHeroBtn');
+  const preOrderForm = document.getElementById('preOrderForm');
+  const preOrderSubmit = document.getElementById('preOrderSubmit');
+  const preOrderMessage = document.getElementById('preOrderMessage');
+
+  const PREORDER_WEBHOOK = 'https://paddling-that-collie.ngrok-free.dev/webhook-test/User-login';
+
+  function openPreOrder() {
+    preOrderModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePreOrder() {
+    preOrderModal.classList.remove('active');
+    document.body.style.overflow = '';
+    preOrderMessage.className = 'form-message';
+    preOrderMessage.textContent = '';
+    preOrderForm.reset();
+    preOrderForm.style.display = '';
+    document.querySelector('#preOrderModal .modal-subtitle').style.display = '';
+  }
+
+  preOrderNavBtn.addEventListener('click', openPreOrder);
+  preOrderHeroBtn.addEventListener('click', openPreOrder);
+  preOrderClose.addEventListener('click', closePreOrder);
+  preOrderModal.addEventListener('click', e => {
+    if (e.target === preOrderModal) closePreOrder();
+  });
+
+  function setPreOrderState(loading) {
+    preOrderSubmit.disabled = loading;
+    preOrderSubmit.textContent = loading ? 'Placing Order...' : 'Place Pre-Order';
+  }
+
+  function showPreOrderMessage(type, text) {
+    preOrderMessage.className = 'form-message ' + type;
+    preOrderMessage.textContent = text;
+  }
+
+  preOrderForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('preOrderName').value.trim();
+    const phone = document.getElementById('preOrderPhone').value.trim();
+    const address = document.getElementById('preOrderAddress').value.trim();
+    const item = document.getElementById('preOrderItem').value;
+    const pieces = document.getElementById('preOrderPieces').value;
+
+    if (!name || !phone || !address || !item || !pieces) {
+      showPreOrderMessage('error', 'Please fill in all fields.');
+      return;
+    }
+
+    setPreOrderState(true);
+
+    const payload = {
+      type: 'pre-order',
+      name,
+      phone,
+      address,
+      item,
+      pieces: parseInt(pieces),
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(PREORDER_WEBHOOK, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        preOrderForm.style.display = 'none';
+        document.querySelector('#preOrderModal .modal-subtitle').style.display = 'none';
+        preOrderMessage.className = 'form-message';
+        preOrderMessage.innerHTML = `
+          <div class="preorder-success">
+            <div class="preorder-success-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Pre-Order Confirmed!</h3>
+            <p>${item} × ${pieces} — We'll be in touch soon.</p>
+          </div>
+        `;
+        preOrderMessage.style.display = 'block';
+        setTimeout(closePreOrder, 3500);
+      } else {
+        showPreOrderMessage('error', data.message || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      showPreOrderMessage('error', 'Cannot reach server. Please try again later.');
+    } finally {
+      setPreOrderState(false);
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
