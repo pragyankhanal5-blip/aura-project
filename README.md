@@ -84,7 +84,7 @@ The goal of this project is to demonstrate advanced front-end development skills
 
 Add your GitHub Pages URL here:
 
-https://YOUR_USERNAME.github.io/AURA-Pro
+https://pragyankhanal5-blip.github.io/aura-project
 
 ## Author
 
